@@ -130,3 +130,6 @@ dmypy.json
 
 # .idea
 .idea
+
+# postman collection of API queries
+.postman-collection/
