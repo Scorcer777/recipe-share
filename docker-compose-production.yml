@@ -10,26 +10,28 @@ services:
   db:
     image: postgres:13.10-alpine
     container_name: db
-    env_file: .env
+    env_file: ./.env
     volumes:
-      - pg_data_foodgram:/var/lib/postgresql/data/
+      - pg_data_foodgram:/var/lib/postgresql/data/  # OK
 
   backend:
     container_name: backend
     image: notilttoday1/foodgram_backend
-    env_file: .env
+    env_file: ./.env
     volumes:
-      - static_foodgram:/backend/collected_static/
-      - media_foodgram:/backend/media/ 
+      - static_foodgram:/backend/collected_static/  # OK
+      - media_foodgram:/backend/media/  # OK
     depends_on:
       - db
 
   frontend:
     container_name: frontend
     image: notilttoday1/foodgram_frontend
-    env_file: .env
+    env_file: ./.env
     volumes:
-      - static_foodgram:/app/result_build/
+      - ./frontend/:/app/result_build/ # OK
+    depends_on:
+      - backend
 
   nginx:
     image: nginx:1.19.3
@@ -44,8 +46,8 @@ services:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
       - ./frontend/build:/usr/share/nginx/html/
       - ./docs/:/usr/share/nginx/html/api/docs/
-      - static_foodgram:/etc/var/html/static/
-      - media_foodgram:/etc/nginx/html/media/
+      - foodgram_static:/var/html/static/
+      - media_static:/var/html/media/
     depends_on:
       - backend
       - frontend
