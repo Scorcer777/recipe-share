@@ -1,4 +1,4 @@
-name: Main Kittygram workflow
+name: Main Foodgram workflow
 
 on:
   push:
@@ -43,7 +43,7 @@ jobs:
         with:
           context: ./backend/
           push: true
-          tags: notilttoday1/backend_backend:latest
+          tags: notilttoday1/foodgram_backend:latest
 
 
   deploy:
@@ -71,7 +71,7 @@ jobs:
         key: ${{ secrets.SSH_KEY }}
         passphrase: ${{ secrets.SSH_PASSPHRASE }}
         script: |
-          cd kittygram
+          cd FOODGRAM-PROJECT-REACT
           # Выполняет pull образов с Docker Hub
           sudo docker compose -f docker-compose-production.yml pull
           # Перезапускает все контейнеры в Docker Compose
