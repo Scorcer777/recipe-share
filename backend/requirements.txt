@@ -13,3 +13,4 @@ python-dotenv
 gunicorn==20.1.0
 drf-extra-fields
 django-filter
+flake8
