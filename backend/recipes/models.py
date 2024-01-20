@@ -82,7 +82,7 @@ class Recipe(models.Model):
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги', related_name='recipes'
     )
-    image = models.ImageField('Изображение блюда', upload_to='media/')
+    image = models.ImageField('Изображение блюда', upload_to='recipes/')
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name="Дата публикации",

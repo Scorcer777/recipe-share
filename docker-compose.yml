@@ -16,7 +16,7 @@ services:
 
   backend:
     container_name: backend
-    image: notilttoday1/foodgram_backend
+    build: ./backend
     env_file: .env
     volumes:
       - static_foodgram:/collected_static
