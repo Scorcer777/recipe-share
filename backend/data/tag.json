@@ -2,25 +2,25 @@
   {
      "model": "recipes.tag",
      "fields": {
-     "name": "Первое блюдо", "color":"69528E", "slug":"firstcourse"
+     "name": "Первое блюдо", "color":"#ff0000", "slug":"firstcourse"
      }
   },
   {
      "model": "recipes.tag",
      "fields": {
-     "name": "Второе блюдо", "color":"D8E70E", "slug":"secondcourse"
+     "name": "Второе блюдо", "color":"#ff5500", "slug":"secondcourse"
      }
   },
   {
      "model": "recipes.tag",
      "fields": {
-     "name": "Десерт", "color":"722F0A", "slug":"desert"
+     "name": "Десерт", "color":"#a74e2c", "slug":"desert"
      }
   },
   {
    "model": "recipes.tag",
    "fields": {
-   "name": "Салат", "color":"77FF33", "slug":"salad"
+   "name": "Салат", "color":"#50c878", "slug":"salad"
    }
    }
 ]

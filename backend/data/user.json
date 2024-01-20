@@ -2,19 +2,19 @@
   {
      "model": "users.customuser",
      "fields": {
-      "email": "cook@yandex.ru", "username": "Cook", "first_name": "pass", "last_name": "pass", "password": "MainCook"
+      "email": "cook@yandex.ru", "username": "Cook", "first_name": "pass", "last_name": "pass", "password": "Scorcer777"
      }
   },
   {
      "model": "users.customuser",
      "fields": {
-     "email": "customer_1@yandex.ru", "username": "customer_1", "first_name": "pass", "last_name": "pass", "password": "JustACustomer"
+     "email": "customer_1@yandex.ru", "username": "customer_1", "first_name": "pass", "last_name": "pass", "password": "Scorcer777"
      }
    },
    {
       "model": "users.customuser",
       "fields": {
-      "email": "customer_2@yandex.ru", "username": "customer_2", "first_name": "pass", "last_name": "pass", "password": "AnotherCustomer"
+      "email": "customer_2@yandex.ru", "username": "customer_2", "first_name": "pass", "last_name": "pass", "password": "Scorcer777"
       }
     }
 ]

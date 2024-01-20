@@ -4,8 +4,10 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from django.contrib.auth import get_user_model
 
 
-MIN_VALIDATION = 1
-MAX_VALIDATION = 100
+MIN_AMOUNT = 1
+MAX_AMOUNT = 10000
+MIN_COOKING_TIME = 1
+MAX_COOKING_TIME = 1000
 MAX_LENGTH = 200
 
 
@@ -13,6 +15,7 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
+    '''Модель ингридиентов.'''
     name = models.CharField('Наименование ингридиента',
                             max_length=MAX_LENGTH)
     measurement_unit = models.CharField('Ед. измерения',
@@ -34,12 +37,13 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
+    '''Модель тегов.'''
     name = models.CharField('Тег', max_length=MAX_LENGTH,
                             unique=True)
     color = models.CharField('Цвет', max_length=7,
                              unique=True, null=True)
     slug = models.SlugField('Cлаг', max_length=MAX_LENGTH,
-                            unique=True)
+                            unique=True, null=True)
 
     class Meta:
         ordering = ('name',)
@@ -51,6 +55,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
+    '''Модель рецептов.'''
     author = models.ForeignKey(
         User, on_delete=models.CASCADE,
         verbose_name='Автор',
@@ -62,13 +67,17 @@ class Recipe(models.Model):
         'Время приготовления мин.',
         validators=[
             MinValueValidator(
-                MIN_VALIDATION,
-                'Минимальное время приготовелния - 1 минута.'
+                MIN_COOKING_TIME,
+                message=f'Минимальное время приготовелния - {MIN_COOKING_TIME}'
             ),
-            MaxValueValidator(MAX_VALIDATION, 'Перебор!')]
+            MaxValueValidator(
+                MAX_COOKING_TIME,
+                message=f'Минимальное время приготовелния - {MAX_COOKING_TIME}'
+            )
+        ]
     )
     ingredients = models.ManyToManyField(
-        Ingredient, through='IngredientAmount', verbose_name='Ингридиенты'
+        Ingredient, through='RecipeIngredientList', verbose_name='Ингридиенты'
     )
     tags = models.ManyToManyField(
         Tag, verbose_name='Теги', related_name='recipes'
@@ -92,7 +101,8 @@ class Recipe(models.Model):
         return format_html('<br>'.join(self.text.splitlines()))
 
 
-class IngredientAmount(models.Model):
+class RecipeIngredientList(models.Model):
+    '''Модель связи рецепта количества ингридиента.'''
     recipe = models.ForeignKey(
         Recipe, on_delete=models.CASCADE, verbose_name='Рецепт',
         related_name='recipe_ingredients'
@@ -105,17 +115,19 @@ class IngredientAmount(models.Model):
         'Количество',
         validators=[
             MinValueValidator(
-                MIN_VALIDATION,
-                message='Минимальное количество ингридиента = 1'
+                MIN_AMOUNT,
+                message=f'Минимальное количество ингридиента = {MIN_AMOUNT}'
             ),
-            MaxValueValidator(MAX_VALIDATION, message='Перебор!')
+            MaxValueValidator(
+                MAX_AMOUNT,
+                message=f'Максимальное количество ингридиента = {MAX_AMOUNT}')
         ]
     )
 
     class Meta:
         ordering = ('recipe',)
-        verbose_name = 'Рецепт - Ингридиент - Количество'
-        verbose_name_plural = 'Рецепты - Ингридиенты - Количества'
+        verbose_name = 'Список ингридеиентов рецепта'
+        verbose_name_plural = 'Списки ингридеиентов рецепта'
         # В рецепте каждый ингридиент может фигурировать только один раз.
         constraints = [
             models.UniqueConstraint(
@@ -136,13 +148,13 @@ class UserRecipeModel(models.Model):
 
     class Meta:
         abstract = True
-        ordering = ('recipe',)
 
 
 class Favourite(UserRecipeModel):
+    '''Модель избранных рецептов.'''
 
-    class Meta(UserRecipeModel.Meta):
-        default_related_name = 'favorites'
+    class Meta:
+        default_related_name = 'favorite_recipes'
         verbose_name = 'Избранное'
         verbose_name_plural = 'Избранное'
         constraints = [
@@ -151,11 +163,12 @@ class Favourite(UserRecipeModel):
                 name='unique_user_favorite_list',
             ),
         ]
+        ordering = ('recipe',)
 
 
 class ShoppingCart(UserRecipeModel):
-
-    class Meta(UserRecipeModel.Meta):
+    '''Модель модель списка покупок.'''
+    class Meta:
         default_related_name = 'shopping_cart'
         verbose_name = 'Корзина покупок'
         verbose_name_plural = 'Корзины покупок'
@@ -165,3 +178,4 @@ class ShoppingCart(UserRecipeModel):
                 name='unique_shopping_cart_list',
             ),
         ]
+        ordering = ('recipe',)

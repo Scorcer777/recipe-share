@@ -13,6 +13,7 @@ class CustomUser(AbstractUser):
     REQUIRED_FIELDS = ['username', 'first_name', 'last_name']
     username = models.CharField(
         'Никнейм',
+        blank=False,
         max_length=USERNAME_MAX_LENGTH,
         unique=True
     )
@@ -22,8 +23,15 @@ class CustomUser(AbstractUser):
         max_length=EMAIL_MAX_LENGTH,
         unique=True
     )
-    first_name = models.CharField('Имя', max_length=USERNAME_MAX_LENGTH)
-    last_name = models.CharField('Фамилия', max_length=USERNAME_MAX_LENGTH)
+    first_name = models.CharField(
+        'Имя',
+        blank=False,
+        max_length=USERNAME_MAX_LENGTH)
+    last_name = models.CharField(
+        'Фамилия',
+        blank=False,
+        max_length=USERNAME_MAX_LENGTH,
+    )
 
     class Meta:
         ordering = ('username',)
@@ -34,17 +42,17 @@ class CustomUser(AbstractUser):
         return self.username
 
 
-class Follow(models.Model):
+class Subscriptions(models.Model):
     '''Модель подписок.'''
     user = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE,
         verbose_name='Пользователь',
-        related_name='follows',
+        related_name='subscribed_to',
     )
-    following = models.ForeignKey(
+    subscription = models.ForeignKey(
         CustomUser, on_delete=models.CASCADE,
         verbose_name='Подписан на пользователя',
-        related_name='is_followed_by',
+        related_name='subscribers',
     )
 
     class Meta:
@@ -57,12 +65,12 @@ class Follow(models.Model):
             raise ValidationError(
                 'Нельзя подписаться на себя!'
             )
-        if Follow.objects.filter(
-                user=self.user, following=self.following).exists():
+        if Subscriptions.objects.filter(
+                user=self.user, subscription=self.subscription).exists():
             raise ValidationError(
                 'Вы уже подписаны на данного пользователя!'
             )
         return super().save(self)
 
     def __str__(self):
-        return f'{self.user} подписан на {self.following}'
+        return f'{self.user} подписан на {self.subscription}'

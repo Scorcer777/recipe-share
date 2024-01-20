@@ -11,14 +11,14 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'default_secret_key')
 
 DEBUG = os.getenv('DEBUG', 'False') == 'True'
 
-DB_LOCAL = os.getenv('DB_LOCAL', 'False') == 'True'
-
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost').split(',')
 
 
 # Application definition
 
-INSTALLED_APPS = [
+INSTALLED_APPS = [    
+    'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -29,9 +29,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'djoser',
     'django_filters',
-    'api.apps.ApiConfig',
-    'recipes.apps.RecipesConfig',
-    'users.apps.UsersConfig',
 ]
 
 MIDDLEWARE = [
@@ -69,26 +66,17 @@ WSGI_APPLICATION = 'foodgram_project.wsgi.application'
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
 
-if DB_LOCAL:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
-        }
-    }
 
-
-else:
-    DATABASES = {
-        'default': {
-            'ENGINE': os.environ.get('DB_ENGINE', default='django.db.backends.postresql'),
-            'NAME': os.environ.get('DB_NAME', 'django'),
-            'USER': os.environ.get('POSTGRES_USER', 'django'),
-            'PASSWORD': os.environ.get('POSTGRES_PASSWORD', ''),
-            'HOST': os.environ.get('DB_HOST', ''),
-            'PORT': os.environ.get('DB_PORT', 5432),
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': os.environ.get('DB_ENGINE', default='django.db.backends.postresql'),
+        'NAME': os.environ.get('DB_NAME', 'django'),
+        'USER': os.environ.get('POSTGRES_USER', 'django'),
+        'PASSWORD': os.environ.get('POSTGRES_PASSWORD', ''),
+        'HOST': os.environ.get('DB_HOST', ''),
+        'PORT': os.environ.get('DB_PORT', 5432),
     }
+}
 
 AUTH_USER_MODEL = 'users.CustomUser'
 
@@ -148,18 +136,15 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS':
-        'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 6,
 }
 
 DJOSER = {
     'LOGIN_FIELD': 'email',
     'HIDE_USERS': False,
     'SERIALIZERS': {
-        'user_create': 'api.serializers.UserRegistrationSerializer',
-        'user': 'api.serializers.UserProfileSerializer',
-        'current_user': 'api.serializers.UserProfileSerializer',
+        'user_create': 'recipes.serializers.RegistrationSerializer',
+        'user': 'recipes.serializers.ProfileSerializer',
+        'current_user': 'recipes.serializers.ProfileSerializer',
     },
     'PERMISSIONS': {
         'user': ['rest_framework.permissions.AllowAny'],
