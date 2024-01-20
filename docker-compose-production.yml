@@ -19,8 +19,8 @@ services:
     image: notilttoday1/foodgram_backend
     env_file: ./.env
     volumes:
-      - static_foodgram:/backend/collected_static/  # OK
-      - media_foodgram:/backend/media/  # OK
+      - static_foodgram:/collected_static/  # OK
+      - media_foodgram:/media/  # OK
     depends_on:
       - db
 
