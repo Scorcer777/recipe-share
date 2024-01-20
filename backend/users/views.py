@@ -26,7 +26,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
             'password': request.data['password'],
             'first_name': request.data['first_name'],
             'last_name': request.data['last_name'],
-            }
+        }
         serializer = RegistrationSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
@@ -84,8 +84,8 @@ class ProfileViewSet(viewsets.ModelViewSet):
                 return Response({'message': 'Вы не авторизованы!'},
                                 status=status.HTTP_401_UNAUTHORIZED)
             if not Subscriptions.objects.filter(
-                        user=request.user,
-                        subscription=old_subscription).exists():
+                    user=request.user,
+                    subscription=old_subscription).exists():
                 return Response({
                     'message': 'Вы не были подписаны на данного автора.'},
                     status=status.HTTP_400_BAD_REQUEST)

@@ -13,8 +13,8 @@ router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
 router_v1.register('recipes', RecipeViewSet, basename='recipes')
 
 urlpatterns = [
-    path('users/subscriptions/', ProfileViewSet.as_view(
-        {'get': 'subscriptions'}),
+    path('users/subscriptions/',
+         ProfileViewSet.as_view({'get': 'subscriptions'}),
          name='user-subscriptions'),
     path('', include('djoser.urls')),
     path('', include(router_v1.urls)),
