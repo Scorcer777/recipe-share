@@ -8,16 +8,14 @@ from .models import CustomUser, Subscriptions
 from recipes.serializers import (RegistrationSerializer,
                                  ProfileSerializer,
                                  SubscriptionsSerializer)
-from recipes.pagination import CustomPagination
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
-    '''Вьюсет для работы с данными пользователей.'''
+    """Вьюсет для работы с данными пользователей."""
     queryset = CustomUser.objects.all()
     http_method_names = ['get', 'post', 'delete']
     serializer_class = ProfileSerializer
     permission_classes = (AllowAny,)
-    pagination_class = CustomPagination
 
     def create(self, request):
         data = {
@@ -28,13 +26,25 @@ class ProfileViewSet(viewsets.ModelViewSet):
             'last_name': request.data['last_name'],
         }
         serializer = RegistrationSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            return Response(
-                serializer.errors, status=status.HTTP_400_BAD_REQUEST
-            )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(
+        detail=True,
+        methods=['get'],
+        permission_classes=[IsAuthenticated]
+    )
+    def me(self, request):
+        if not request.user.is_authenticated:
+            return Response({'message': 'Вы не авторизованы!'},
+                            status=status.HTTP_401_UNAUTHORIZED)
+        queryset = CustomUser.objects.get(id=request.user.id)
+        serializer = ProfileSerializer(
+            queryset, context={'request': request}
+        )
+        return Response(serializer.data,
+                        status=status.HTTP_200_OK)
 
     @action(
         detail=False,

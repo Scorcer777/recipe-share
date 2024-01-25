@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import Ingredient, Tag, Recipe, RecipeIngredientList, Favourite
+
+from .models import (Recipe, Ingredient, Tag,
+                     RecipeIngredientList, RecipeTagList,
+                     Favourite, ShoppingCart)
+from users.models import Subscriptions
 
 
 class RecipeAdmin(admin.ModelAdmin):
@@ -9,7 +13,9 @@ class RecipeAdmin(admin.ModelAdmin):
         'text',
         'cooking_time',
         'image',
-        'favorites_count'
+        'favorites_count',
+        'ingredient_list',
+        'tag_list'
     )
     list_editable = (
         'name',
@@ -20,9 +26,24 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields = ('name',)
     list_filter = ('name', 'author', 'tags')
 
+    @admin.display(description='Количество рецептов в избранном')
     def favorites_count(self, obj):
         count = Favourite.objects.filter(recipe=obj).count()
         return count
+
+    @admin.display(description='Инридиенты')
+    def ingredient_list(self, obj):
+        ingredients = RecipeIngredientList.objects.filter(
+            recipe=obj.id
+        ).values_list('ingredient__name', flat=True)
+        return ingredients
+
+    @admin.display(description='Теги')
+    def tag_list(self, obj):
+        tags = RecipeTagList.objects.filter(
+            recipe=obj.id
+        ).values_list('tag__name', flat=True)
+        return tags
 
 
 class IngredientAdmin(admin.ModelAdmin):
@@ -36,5 +57,9 @@ class IngredientAdmin(admin.ModelAdmin):
 
 admin.site.register(Recipe, RecipeAdmin)
 admin.site.register(Ingredient, IngredientAdmin)
-admin.site.register(Tag)
-admin.site.register(RecipeIngredientList)
+admin.site.register(Tag, admin.ModelAdmin)
+admin.site.register(RecipeIngredientList, admin.ModelAdmin)
+admin.site.register(RecipeTagList, admin.ModelAdmin)
+admin.site.register(Favourite, admin.ModelAdmin)
+admin.site.register(Subscriptions, admin.ModelAdmin)
+admin.site.register(ShoppingCart, admin.ModelAdmin)

@@ -1,6 +1,7 @@
 from django.db import models
-from django.core.exceptions import ValidationError
+
 from django.contrib.auth.models import AbstractUser
+from django.forms import ValidationError
 
 
 EMAIL_MAX_LENGTH = 254
@@ -57,20 +58,16 @@ class Subscriptions(models.Model):
 
     class Meta:
         ordering = ('user',)
-        verbose_name = 'Подписка'
-        verbose_name_plural = 'Подписки'
+        verbose_name = 'Объект подписки'
+        verbose_name_plural = 'Объекты подпискок'
 
-    def restrictions(self):
-        if self.user == self.following:
-            raise ValidationError(
-                'Нельзя подписаться на себя!'
-            )
+    def clean(self):
+        if self.user == self.subscription:
+            raise ValidationError('Вы не можете подписаться на себя!')
         if Subscriptions.objects.filter(
-                user=self.user, subscription=self.subscription).exists():
-            raise ValidationError(
-                'Вы уже подписаны на данного пользователя!'
-            )
-        return super().save(self)
+            user=self.user, subscription=self.subscription
+        ).exists():
+            raise ValidationError('Вы уже подписаны на данного пользователя!')
 
     def __str__(self):
         return f'{self.user} подписан на {self.subscription}'

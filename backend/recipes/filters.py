@@ -1,7 +1,7 @@
 from django_filters.rest_framework import FilterSet, filters
 from rest_framework.filters import SearchFilter
 
-from recipes.models import Recipe, Tag
+from recipes.models import Recipe
 
 
 class IngredientFilter(SearchFilter):
@@ -9,34 +9,30 @@ class IngredientFilter(SearchFilter):
 
 
 class RecipeFilter(FilterSet):
-
-    tags = filters.ModelMultipleChoiceFilter(
-        field_name='tags__slug',
-        to_field_name='slug',
-        queryset=Tag.objects.all()
+    tags = filters.AllValuesMultipleFilter(
+        field_name='tags__slug'
     )
 
     is_favorited = filters.BooleanFilter(
-        method='get_is_favorited')
+        method='get_objects_or_none')
     is_in_shopping_cart = filters.BooleanFilter(
-        method='get_is_in_shopping_cart'
+        method='get_objects_or_none'
     )
 
     class Meta:
         model = Recipe
-        fields = ['author', 'tags',
-                  'is_in_shopping_cart', 'is_favorited']
+        fields = ('author', 'tags',
+                  'is_in_shopping_cart', 'is_favorited')
 
-    def get_is_favorited(self, queryset, name, value):
-        if value:
-            return Recipe.objects.filter(
+    def get_objects_or_none(self, queryset, name, value):
+        FILTERS_DICT = {
+            'is_favorited': Recipe.objects.filter(
                 favorite_recipes__user=self.request.user
-            )
-        return Recipe.objects.none
-
-    def get_is_in_shopping_cart(self, queryset, name, value):
-        if value:
-            return Recipe.objects.filter(
+            ),
+            'is_in_shopping_cart': Recipe.objects.filter(
                 shopping_cart__user=self.request.user
             )
+        }
+        if value:
+            return FILTERS_DICT[name]
         return Recipe.objects.none
