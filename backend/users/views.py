@@ -4,10 +4,12 @@ from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 
+from recipes.pagination import CustomPagination
+
 from .models import CustomUser, Subscriptions
-from recipes.serializers import (RegistrationSerializer,
-                                 ProfileSerializer,
-                                 SubscriptionsSerializer)
+from .serializers import (RegistrationSerializer,
+                          ProfileSerializer,
+                          SubscriptionsSerializer)
 
 
 class ProfileViewSet(viewsets.ModelViewSet):
@@ -16,6 +18,7 @@ class ProfileViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'delete']
     serializer_class = ProfileSerializer
     permission_classes = (AllowAny,)
+    pagination_class = CustomPagination
 
     def create(self, request):
         data = {

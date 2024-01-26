@@ -13,6 +13,9 @@ router_v1.register('ingredients', IngredientViewSet, basename='ingredients')
 router_v1.register('recipes', RecipeViewSet, basename='recipes')
 
 urlpatterns = [
+    # Не хотелось бы переносить в users, пробовал, ломается все приложение.
+    # Сейчас этот URL работает как раз через @action
+    # во вьюсете ProfileViewSet приложения users.
     path('users/subscriptions/',
          ProfileViewSet.as_view({'get': 'subscriptions'}),
          name='user-subscriptions'),

@@ -28,22 +28,17 @@ class RecipeAdmin(admin.ModelAdmin):
 
     @admin.display(description='Количество рецептов в избранном')
     def favorites_count(self, obj):
-        count = Favourite.objects.filter(recipe=obj).count()
-        return count
+        return obj.favorite_recipes.all().count()
 
     @admin.display(description='Инридиенты')
     def ingredient_list(self, obj):
-        ingredients = RecipeIngredientList.objects.filter(
-            recipe=obj.id
-        ).values_list('ingredient__name', flat=True)
-        return ingredients
+        return obj.recipe_ingredients.all().values_list(
+            'ingredient__name', flat=True
+        )
 
     @admin.display(description='Теги')
     def tag_list(self, obj):
-        tags = RecipeTagList.objects.filter(
-            recipe=obj.id
-        ).values_list('tag__name', flat=True)
-        return tags
+        return obj.recipe_tags.all().values_list('tag__name', flat=True)
 
 
 class IngredientAdmin(admin.ModelAdmin):

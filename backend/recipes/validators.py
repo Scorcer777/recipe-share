@@ -6,6 +6,10 @@ from .models import Favourite
 
 
 def username_validator(value):
+    if value == 'me':
+        raise ValidationError(
+            'Имя пользователя "me" недопустимо!'
+        )
     if len(value) > 150:
         raise ValidationError(
             'Имя пользователя не может превышать 150 символов'

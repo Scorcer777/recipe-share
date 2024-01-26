@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.validators import ValidationError
 
+from .pagination import CustomPagination
 from .filters import RecipeFilter, IngredientFilter
 from .permissions import IsAuthorOrReadOnly
 from .models import (Favourite,
@@ -18,9 +19,9 @@ from .models import (Favourite,
                      RecipeIngredientList,
                      ShoppingCart)
 from .serializers import (RecipeCreateSerializer,
+                          RecipeReadOnlySerializer,
                           FavouriteAndCartSerializer,
                           IngredientSerializer,
-                          RecipeReadOnlySerializer,
                           TagSerializer)
 
 
@@ -47,6 +48,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
     http_method_names = ['get', 'post', 'patch', 'delete']
+    pagination_class = CustomPagination
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -114,17 +116,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
     )
     def download_shopping_cart(self, request):
         user = request.user
-        shopping_cart_recipes = ShoppingCart.objects.filter(
-            user=user).values('recipe')
-        ingredients = RecipeIngredientList.objects.filter(
-            recipe__in=shopping_cart_recipes).values('ingredient')
-        # Фильтрация через default_related_name модели ShoppingCart
-        # никаким образом не получилась.
-        # К примеру пробовал так shopping_cart__recipe=recipe.
-        # Перепробовал множество вариантов. Нужна подсказка:)
         aggregated_ingredients = RecipeIngredientList.objects.filter(
-            recipe__in=shopping_cart_recipes,
-            ingredient__in=ingredients
+            recipe__shopping_cart__user=user
         ).values('ingredient__name', 'ingredient__measurement_unit').annotate(
             total_amount=Sum('amount')
         )
