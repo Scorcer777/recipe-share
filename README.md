@@ -58,7 +58,7 @@ docker compose up
     "password": "Qwerty123"
 }
 ```
-### 5. http://localhost/api/users/id(целое число)/subscribe/ - подписаться на пользователя.
+### 5. POST localhost/api/users/id(целое число)/subscribe/ - подписаться на пользователя.
 ### 6. GET localhost/api/recipes/ - получить список всех рецептов.
 ### 7. GET localhost/api/recipes/id(целое число)/ - получить рецепт.
 ### 8. POST localhost/api/recipes/ (доступно только авторизованным пользователям.)
@@ -83,5 +83,5 @@ docker compose up
 ```
 ### 9. POST http://localhost/api/recipes/id(целое число)/favorite/ - добавление рецепта в Избранное.
 ### 10. POST http://localhost/api/recipes/id(целое число)/shopping_cart/ - добавление рецепта в Список покупок.
-### 11. GET http://localhost/api/recipes/download_shopping_cart/ - скачать список покупок.
+### 11. GET http://localhost/api/recipes/download_shopping_cart/ - скачать список покупок в виде PDF или TXT файла.
 
