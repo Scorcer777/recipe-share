@@ -34,11 +34,37 @@ docker compose up
 ### 5. Миграции, загрузка тестовых пользователей, ингридиентов и тегов произойдут автоматически.
 ### 6. Открыть в браузере URL http://localhost/ для работы с сайтом или запустить программу Postman(или аналогичную для работы с API) для выполнения запросов.
 
-## Базовые запросы к API c помощью POSTMAN(или аналогичной программы для работы с API):
 
-### 1. GET localhost/api/users/ - получить список всех пользователей.
-### 2. GET localhost/api/users/id(целое число)/ - получить профиль пользователя.
-### 3. POST localhost/api/users/ - зарегистрировать нового пользователя.
+# Алгоритм регистрации пользователей
+1. Пользователь отправляет POST-запрос на добавление нового пользователя на эндпоинт localhost/api/users/ со следующими обязательными параметрами:
+```JSON
+{
+    "email": "vpupkin@yandex.ru",
+    "username": "vasya.pupkin",
+    "first_name": "Вася",
+    "last_name": "Пупкин",
+    "password": "Qwerty123"
+}
+```
+3. Пользователь отправляет POST-запрос с параметрами username и passworn на эндпоинт /api/auth/token/login/, в ответ на запрос ему приходит auth token.
+```JSON
+{
+    "email": "vpupkin@yandex.ru",
+    "password": "Qwerty123"
+}
+```
+4. Далее, при выполнении запросов, требующих аутентификации пользователя через Postman, необходимо указываеть в Headers параметр Autorization со значением Token <код токена>.
+5. 
+# Пользовательские роли
+Аноним — может просматривать описания рецептов, просматривать страницы пользователей.
+Аутентифицированный пользователь (user) — может, как и Аноним, читать всё, дополнительно он может публиковать и редактировать свои рецепты, добавлять любые рецепты их в избранное, подписываться на пользователей и скачивать свой "Список покупок". Эта роль присваивается по умолчанию каждому новому пользователю.
+Суперюзер Django — обладет правами администратора (admin), полные права на управление всем контентом проекта.
+
+# Базовые запросы к API c помощью POSTMAN(или аналогичной программы для работы с API):
+
+1. GET localhost/api/users/ - получить список всех пользователей.
+2. GET localhost/api/users/id(целое число)/ - получить профиль пользователя.
+3. POST localhost/api/users/ - зарегистрировать нового пользователя.
 Содержимое(обязательные поля)
 ```JSON
 {
@@ -49,7 +75,7 @@ docker compose up
     "password": "Qwerty123"
 }
 ```
-### 4. POST http://localhost/api/auth/token/login/ - получить токен авторизации.
+4. POST http://localhost/api/auth/token/login/ - получить токен авторизации.
 Содержимое(обязательные поля)
 ```JSON
 {
@@ -57,10 +83,10 @@ docker compose up
     "password": "Qwerty123"
 }
 ```
-### 5. POST localhost/api/users/id(целое число)/subscribe/ - подписаться на пользователя.
-### 6. GET localhost/api/recipes/ - получить список всех рецептов.
-### 7. GET localhost/api/recipes/id(целое число)/ - получить рецепт.
-### 8. POST localhost/api/recipes/ (доступно только авторизованным пользователям.)
+5. POST localhost/api/users/id(целое число)/subscribe/ - подписаться на пользователя.
+6. GET localhost/api/recipes/ - получить список всех рецептов.
+7. GET localhost/api/recipes/id(целое число)/ - получить рецепт.
+8. POST localhost/api/recipes/ (доступно только авторизованным пользователям.)
 Содержимое(обязательные поля)
 ```JSON
 {
@@ -80,7 +106,7 @@ docker compose up
     "cooking_time": 1
 }
 ```
-### 9. POST http://localhost/api/recipes/id(целое число)/favorite/ - добавление рецепта в Избранное.
-### 10. POST http://localhost/api/recipes/id(целое число)/shopping_cart/ - добавление рецепта в Список покупок.
-### 11. GET http://localhost/api/recipes/download_shopping_cart/ - скачать список покупок в виде PDF или TXT файла.
+9. POST http://localhost/api/recipes/id(целое число)/favorite/ - добавление рецепта в Избранное.
+10. POST http://localhost/api/recipes/id(целое число)/shopping_cart/ - добавление рецепта в Список покупок.
+11. GET http://localhost/api/recipes/download_shopping_cart/ - скачать список покупок в виде PDF или TXT файла.
 
