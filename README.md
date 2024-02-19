@@ -4,7 +4,9 @@ recipe-share - это онлайн-платформа для обмена рец
 ## ЗАПУСК ПРОЕКТА ЛОКАЛЬНО
 
 # 1. Клонировать репозиторий командой в терминале Bash в VS Code:
-git@github.com:Scorcer777/foodgram-project-react.git
+'''
+git clone git@github.com:Scorcer777/foodgram-project-react.git
+'''
 
 # 2. Создать файл с переменными окружения в головной директории проекта:
 touch .env
